@@ -31,6 +31,17 @@ class PhotosViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
+    func showUpdateImages(){
+        store.fetchAllPhotos{
+            (photosResult) -> Void in
+            switch photosResult {
+            case let .success(photosListArray):
+                self.photosListArray = photosListArray
+            case let .failure(error):
+                print("Error loading images")
+            }
+        }
+    }
     
     @IBAction func nextImage(_ sender: UITapGestureRecognizer) {
      print("next Image")
