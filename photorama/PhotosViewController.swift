@@ -12,20 +12,23 @@ class PhotosViewController: UIViewController {
 
     @IBOutlet var imageView: UIImageView!
     var store: PhotoStore!
+    var imagesList = [Photo]()
+    var nextIndex = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.showUpdateImages()
+        
         store.fetchInterestingPhotos{
             (photosResult) -> Void in
             switch photosResult {
             case let .success(photos):
-                print("successfully found \(photos.count) photos")
-                if let firstPhoto = photos.first {
-                    self.updateImageView(for: firstPhoto)
+                self.showUpdateImages()
+                if let firstPicture = self.imagesList.first{
+                    self.updateImageView(for: firstPicture)
                 }
             case let .failure(error):
-                print("Error fatching interesting photos: \(error)")
+              print("Error in loading image from database")
             }
         }
         // Do any additional setup after loading the view.
@@ -35,8 +38,8 @@ class PhotosViewController: UIViewController {
         store.fetchAllPhotos{
             (photosResult) -> Void in
             switch photosResult {
-            case let .success(photosListArray):
-                self.photosListArray = photosListArray
+            case let .success(imagesList):
+                self.imagesList = imagesList
             case let .failure(error):
                 print("Error loading images")
             }
@@ -44,7 +47,8 @@ class PhotosViewController: UIViewController {
     }
     
     @IBAction func nextImage(_ sender: UITapGestureRecognizer) {
-     print("next Image")
+     nextIndex+=1
+        self.updateImageView(for: imagesList[nextIndex])
     }
     
     func updateImageView(for photo: Photo){
